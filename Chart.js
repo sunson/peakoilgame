@@ -2,6 +2,8 @@ PeakOil.Chart = function (game, x, y, w, h) {
     Phaser.Sprite.call(this, game, x, y, 'empty');
     this.originWidth = game.world.width;
     this.originHeight = game.world.height;
+    this.areaUnderCurve = true;
+    this.title = "Chart";
     this.myWidth = w;
     this.myHeight = h;
     this.testCounter = 0;
@@ -10,8 +12,10 @@ PeakOil.Chart = function (game, x, y, w, h) {
     this.nextTime = Math.floor(this.game.time.totalElapsedSeconds()) + this.samplePeriod;
     this.graphic = new Phaser.Graphics(game, 0, 0);
     this.legend = new Phaser.Text(game, 0, this.myHeight, "Test", { font: "12px Arial", fill: "#ffff00", wordWrap: true, wordWrapWidth: this.myWidth - 5 });
+    this.titletxt = new Phaser.Text(game, 0, this.myHeight, this.title, { font: "15px Arial", fill: "#FFFFFF"});
     this.addChild(this.graphic);
     this.addChild(this.legend);
+    this.addChild(this.titletxt);
 
     this.gameover = new Phaser.Text(this.game, 0, 0, "Game Over!", { font: "40px Arial", fill: "#FFFFFF" });
     this.gameover.alpha = 0;
@@ -25,26 +29,17 @@ PeakOil.Chart.prototype = Object.create(Phaser.Sprite.prototype);
 PeakOil.Chart.prototype.constructor = PeakOil.Chart;
 
 PeakOil.Chart.prototype.update = function() {
-    if (this.hasEnded()) {
-	this.myHeight = this.game.world.height / 2;
-	this.myWidth = this.game.world.width / 2;
-	this.x = this.game.world.width / 2 - this.myWidth / 2;
-	this.y = this.game.world.height / 2 - this.myHeight / 2;
-	this.anchor.setTo(0.5, 0.5);
-	this.legend.x = this.myWidth / 2 - this.legend.width / 2;
-	this.legend.y = this.myHeight + 10;
-	this.gameover.alpha = 0.8;
-	this.gameover.x = this.x + this.myWidth / 2;
-	this.gameover.y = this.y + this.myHeight / 2;
-	this.gameover.anchor.setTo(0.5, 0.5);
-	this.game.add.existing(this.gameover);
-	this.anchor.setTo(0.5, 0.5);
-	this.legend.scale.setTo(2, 2);
-	this.renderChart();
-    } else {
-	this.renderChart();
-    }
+    this.renderChart();
+    this.titletxt.text = this.title;
 };
+
+PeakOil.Chart.prototype.toggleAreaUnderCurve = function() {
+    this.areaUnderCurve = !this.areaUnderCurve;
+}
+
+PeakOil.Chart.prototype.setTitle = function(t) {
+    this.title = t;
+}
 
 PeakOil.Chart.prototype.hasEnded = function() {
     var noweltime = this.game.time.totalElapsedSeconds();
@@ -136,15 +131,26 @@ PeakOil.Chart.prototype.renderChart = function() {
     this.graphic.clear();
     this.graphic.lineStyle(2, '0x000000', 0.5);
     this.graphic.beginFill('0x000000', 0.5);
-    this.graphic.drawRect(-2, -2, this.myWidth + 4, this.myHeight + 20);
+    this.graphic.drawRect(-2, -2, this.myWidth + 4, this.myHeight + this.legend.height + this.title.height);
     this.graphic.lineStyle(1, '0x00FF00', 1);
+    this.legend.wordWrapWidth = this.myWidth - 10;
     if (this.hasPeaked(dpts)) {
 	this.graphic.beginFill('0xFF0000', 0.5);
-	this.legend.text = "Peak: " + max + ", Tot: " + tot;
+	this.legend.text = "Peak: " + max;
     } else {
-	this.legend.text = "Max: " + max + ", Tot: " + tot;
+	this.legend.text = "Max: " + max;
 	this.graphic.beginFill('0x000000', 0.5);
-    }	
+    }
+    this.title.text = this.title;
+    if (this.areaUnderCurve) {
+	this.legend.text += " Tot: " + tot;
+    } else {
+	this.legend.text += " Last: " + dpts[dpts.length - 2];
+    }
+    this.legend.x = 0;
+    this.title.x = 0;
+    this.title.y = this.myHeight - this.legend.height - this.title.height;
+    this.legend.y = this.myHeight - this.legend.height;
     this.graphic.drawRect(0, 0, this.myWidth, this.myHeight);
     this.graphic.endFill();
     this.graphic.lineStyle(1, '0x00FFFF', 1);

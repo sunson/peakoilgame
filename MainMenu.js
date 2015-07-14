@@ -4,11 +4,11 @@ PeakOil.MainMenu = function (game) {
     this.land;
     this.panel;
     this.waves;
+    this.bank;
     this.introText;
     this.title;
     this.fglayer;
     this.bglayer;
-    this.bank;
 
     this.camXDir = 1;
     this.camYDir = 1;
@@ -61,10 +61,16 @@ PeakOil.MainMenu.prototype = {
 	var that = this;
 
 	this.chart = new PeakOil.Chart(this.game, this.game.width - dashwid - 60, 10, dashwid, 90);
-	this.bank = new PeakOil.Bank(this.game, this.game.width - dashwid - 200, 10, this.chart);
+	this.chart.setTitle("Oil");
+	this.chart2 = new PeakOil.Chart(this.game, this.game.width - dashwid * 2 - 60, 10, dashwid, 90);
+	this.chart2.setTitle("Bank");
+	this.chart2.toggleAreaUnderCurve();
+	this.bank = new PeakOil.Bank(this.game, this.game.width / 2, 20, this.chart2);
+	this.bank.EasyMode();
 	this.bglayer.add(this.chart);
-	this.bglayer.add(this.bank);
+	this.bglayer.add(this.chart2);
 	this.game.add.existing(this.chart);
+	this.game.add.existing(this.chart2);
 	this.game.add.existing(this.bank);
 	for (var i = 0; i < 50; i++) { 
 	    var f = new PeakOil.Field(this.game, this.game.rnd.integerInRange(0, this.game.world.width - 100), this.game.rnd.integerInRange(0, this.game.world.height - 100), 150, 150, 400);
@@ -72,8 +78,8 @@ PeakOil.MainMenu.prototype = {
 	    this.game.add.existing(f);
 	    this.bglayer.add(f);
 	}
-	var xscale = 15;
-	var yscale = 20;
+	var xscale = 10;
+	var yscale = 5;
 	for (var ix = 0; ix < xscale; ix++) {
 	    for (var iy = 0; iy < yscale; iy++) { 
 		this.game.time.events.add(Phaser.Timer.SECOND * this.game.rnd.integerInRange(1, 20) + this.game.rnd.integerInRange(10, 1100), function () {
@@ -108,27 +114,37 @@ PeakOil.MainMenu.prototype = {
 
 
     createWellAt: function(x, y) {
-	var w = new PeakOil.Well(this.game, x, y, this.chart);
-	w.inputEnabled = false;
-	w.alpha = 1;
-	var fields_here = PeakOil.Field.findAt(x, y);
-	this.bglayer.add(w);
-	this.game.add.existing(w);
-	if (fields_here.length) {
-	    fields_here.forEach(function(f) {
-		f.reveal();
-	    });
-	    w.attachTo(fields_here);
+	var that = this;
+	var w = this.bank.mortgage(PeakOil.WELL_COST, function() {
+	    var w2 = new PeakOil.Well(that.game, x, y, that.chart, that.bank);
+	    return w2;
+	});
+	if (w) {
+	    w.inputEnabled = false;
+	    w.alpha = 1;
+	    var fields_here = PeakOil.Field.findAt(x, y);
+	    this.bglayer.add(w);
+	    this.game.add.existing(w);
+	    if (fields_here.length) {
+		fields_here.forEach(function(f) {
+		    f.reveal();
+		});
+		w.attachTo(fields_here);
+	    } else {
+		w.alpha = 0.5;
+		w.turnOff();
+	    }
 	} else {
-	    w.alpha = 0.5;
-	    w.turnOff();
+	    console.log("HAHA");
 	}
     },
 
     update: function () {
 	this.chart.bringToTop();
+	this.chart2.bringToTop();
 	this.panel.bringToTop();
-	if (this.chart.hasEnded()) {
+	this.bank.bringToTop();
+	if (this.chart.hasEnded() || this.bank.panicState) {
 	    this.game.state.start("MainMenu");
 	}
     },
