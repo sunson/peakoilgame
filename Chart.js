@@ -17,9 +17,7 @@ PeakOil.Chart = function (game, x, y, w, h) {
     this.addChild(this.legend);
     this.addChild(this.titletxt);
 
-    this.gameover = new Phaser.Text(this.game, 0, 0, "Game Over!", { font: "40px Arial", fill: "#FFFFFF" });
-    this.gameover.alpha = 0;
-    this.addChild(this.gameover);
+    this.gameoverflag = false;
 
     this.dataPoints = [];
     var that = this;
@@ -27,6 +25,10 @@ PeakOil.Chart = function (game, x, y, w, h) {
 
 PeakOil.Chart.prototype = Object.create(Phaser.Sprite.prototype);
 PeakOil.Chart.prototype.constructor = PeakOil.Chart;
+
+PeakOil.Chart.prototype.gameover = function() {
+    this.gameoverflag = true;
+};
 
 PeakOil.Chart.prototype.update = function() {
     this.renderChart();
@@ -94,15 +96,17 @@ PeakOil.Chart.prototype.lastDataPoint = function() {
 }
 
 PeakOil.Chart.prototype.addData = function(p) {
-    var eltime = this.game.time.totalElapsedSeconds();
-    var thisTime = Math.floor(eltime);
-    if (thisTime < this.nextTime) {
-	this.incomingBuf.push(Math.abs(p));
-    } else {
-	var s = this.lastDataPoint();
-	this.dataPoints.push(s);
-	this.incomingBuf = [];
-	this.nextTime = thisTime + this.samplePeriod;
+    if (!this.gameoverflag) {
+	var eltime = this.game.time.totalElapsedSeconds();
+	var thisTime = Math.floor(eltime);
+	if (thisTime < this.nextTime) {
+	    this.incomingBuf.push(Math.abs(p));
+	} else {
+	    var s = this.lastDataPoint();
+	    this.dataPoints.push(s);
+	    this.incomingBuf = [];
+	    this.nextTime = thisTime + this.samplePeriod;
+	}
     }
 }
 
