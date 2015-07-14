@@ -37,7 +37,7 @@ PeakOil.MainMenu.prototype = {
 	this.panel.height = 400;
 	this.title = new Phaser.Text(this.game, 0, 0, "Peak Oil", { font: "45px Serif", fill: "#990033" });
 	this.title.enableBody = true;
-	this.introText = new Phaser.Text(this.game, 0, 0, "Click on the land area to create an Oil well. The chart turns red when peak is reached. Peak oil is not the end of oil, but it means end of growth.\n\nDrill, baby, drill!", { font: "20px Serif", fill: "#000066", wordWrap: true, wordWrapWidth: this.panel.width - 200, align: "center"});
+	this.introText = new Phaser.Text(this.game, 0, 0, "Click on the land area to create an Oil well. Watch the bank balance and loan dues. But also watch for peak oil when the chart turns red!\n\nDrill, baby, drill!", { font: "20px Serif", fill: "#000066", wordWrap: true, wordWrapWidth: this.panel.width - 200, align: "center"});
 	this.panel.addChild(this.startButton);
 	this.panel.addChild(this.title);
 	this.game.add.existing(this.title);

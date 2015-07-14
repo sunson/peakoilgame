@@ -65,6 +65,7 @@ PeakOil.Well.prototype.turnOn = function() {
 };
 
 PeakOil.Well.prototype.turnOff = function() {
+    this.animations.play('off');
     this.canProduce = false;
 };
 
@@ -83,8 +84,14 @@ PeakOil.Well.prototype.produceOil = function() {
 	    this.animations.play('off');
 	}
 	this.chart.addData(this_produced);
-	this.bank.earn(this_produced * this.oilPrice);
-	return this_produced;
+	if (!this.chart.gameoverflag) {
+	    this.bank.earn(this_produced * this.oilPrice);
+	    return this_produced;
+	} else {
+	    
+	    this.turnOff();
+	    return 0;
+	}
     } else {
 	this.alpha = 0.5;
 	return 0;

@@ -139,6 +139,8 @@ PeakOil.Game.prototype = {
 
     gameOver: function() {
 	this.gameoverflag = true;
+	this.bankboard.gameover();
+	this.dashboard.gameover();
 	this.dashboard.myHeight = this.game.world.height / 4;
 	this.dashboard.myWidth = this.game.world.width / 4;
 	this.bankboard.myHeight = this.game.world.height / 4;
@@ -206,6 +208,8 @@ PeakOil.Game.prototype = {
 		this.gameoverstats.x = width / 4 * 3;
 		this.gameoverstats.y = height / 5 + 40;
 
+		this.dashboard.alpha = 1;
+		this.bankboard.alpha = 1;
 		this.dashboard.myHeight = height / 4;
 		this.dashboard.myWidth = width / 4;
 		this.bankboard.myHeight = height / 4;
@@ -230,6 +234,8 @@ PeakOil.Game.prototype = {
 	    this.closeButton.y = 30;
 	    this.closeButton.scale.setTo(1.5,1.5);
 	    if (this.gameoverflag) {
+		this.dashboard.alpha = 1;
+		this.bankboard.alpha = 1;
 		this.dashboard.myHeight = height / 4;
 		this.dashboard.myWidth = width / 2;
 		this.bankboard.myHeight = height / 4;
