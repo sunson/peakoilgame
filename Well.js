@@ -1,5 +1,7 @@
 var wellCount = 0;
 
+PeakOil.WELL_COST = 10000;
+
 PeakOil.Well = function (game, x, y, chart, bank) {
     Phaser.Sprite.call(this, game, x, y, 'well');
     this.originWidth = game.world.width;
@@ -8,11 +10,14 @@ PeakOil.Well = function (game, x, y, chart, bank) {
     this.id = "Well#" + wellCount++;
 
     this.chart = chart;
+    this.bank = bank;
 
     this.selected = false;
     this.attachedFields = new Array();
     this.canProduce = true;
     this.produced = 0;
+
+    this.oilPrice = 60; // money per unit produced
 
     this.animations.add('off', [0], 1, false);
     this.animations.add('on', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 15, true);
@@ -34,10 +39,7 @@ PeakOil.Well.prototype.constructor = PeakOil.Well;
 
 PeakOil.Well.prototype.update = function() {
     if (this.game.world.width > this.game.world.height) {
-	// landscape mode
-	this.scale.setTo(1.2, 1.2);
     } else {
-	this.scale.setTo(3, 3);
     }
 
 };
@@ -81,6 +83,7 @@ PeakOil.Well.prototype.produceOil = function() {
 	    this.animations.play('off');
 	}
 	this.chart.addData(this_produced);
+	this.bank.earn(this_produced * this.oilPrice);
 	return this_produced;
     } else {
 	this.alpha = 0.5;
