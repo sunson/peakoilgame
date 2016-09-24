@@ -50,8 +50,6 @@ PeakOil.Well.prototype.attachTo = function(fields) {
 	var x  = this.attachedFields.concat(fields);
 	this.attachedFields = x;
 	this.game.time.events.loop(Phaser.Timer.SECOND, this.gameLoop, this);
-    } else {
-	console.log("Useless well!");
     }
 };
 

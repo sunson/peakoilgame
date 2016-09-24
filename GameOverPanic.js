@@ -36,7 +36,6 @@ PeakOil.GameOverPanic.prototype = {
 	    this.wells.forEach(function(w) {
 		if (w.canProduce) {
 		    var p = w.produceOil();
-		    console.log("w prod", w.id, p);
 		    tickProduced += p;
 		}
 	    });
@@ -49,14 +48,12 @@ PeakOil.GameOverPanic.prototype = {
     createWellAt: function(x, y) {
 	var that = this;
 	var w = this.bank.mortgage(PeakOil.WELL_COST, function() {
-	    console.log("HERE?");
 	    var w2 = new PeakOil.Well(that.game, x, y, that.dashboard);
 	    return w2;
 	});
 	this.wells.push(w);
 	this.midlayer.add(w);
 	var fields_here = PeakOil.Field.findAt(x, y);
-	console.log("Fields here", fields_here);
 	if (fields_here.length) {
 	    fields_here.forEach(function(f) {
 		f.reveal();

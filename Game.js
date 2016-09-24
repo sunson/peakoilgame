@@ -91,7 +91,6 @@ PeakOil.Game.prototype = {
 	    this.wells.forEach(function(w) {
 		if (w.canProduce) {
 		    var p = w.produceOil();
-		    console.log("w prod", w.id, p);
 		    tickProduced += p;
 		}
 	    });
@@ -104,7 +103,6 @@ PeakOil.Game.prototype = {
     createWellAt: function(x, y) {
 	var that = this;
 	var w = this.bank.mortgage(PeakOil.WELL_COST, function() {
-	    console.log("HERE?");
 	    var w2 = new PeakOil.Well(that.game, x, y, that.dashboard);
 	    return w2;
 	});
@@ -112,7 +110,6 @@ PeakOil.Game.prototype = {
 	    this.wells.push(w);
 	    this.midlayer.add(w);
 	    var fields_here = PeakOil.Field.findAt(x, y);
-	    console.log("Fields here", fields_here);
 	    if (fields_here.length) {
 		fields_here.forEach(function(f) {
 		    f.reveal();
@@ -123,8 +120,6 @@ PeakOil.Game.prototype = {
 		w.alpha = 0.5;
 	    }
 	    return w;
-	} else {
-	    console.log("Not enough funds");
 	}
     },
 
@@ -132,7 +127,6 @@ PeakOil.Game.prototype = {
 	this.closeButton.bringToTop();
 	this.bank.bringToTop();
 	if (this.bank.panicState || this.dashboard.hasEnded()) {
-	    console.log("HAS ENDED");
 	    this.gameOver();
 	}
     },
@@ -187,11 +181,9 @@ PeakOil.Game.prototype = {
 
     resize: function (width, height) {
 	this.wells.forEach(function(w) {
-	    console.log("W resize", w);
 	    w.resize(width, height);
 	});
 	this.fields.forEach(function(f) {
-	    console.log("F resize", f);
 	    f.resize(width, height);
 	});
 	this.land.resize(width, height);

@@ -7,11 +7,8 @@ PeakOil.Land = function (game, thegame) {
     this.inputEnabled = true;
     var that = this;
     this.events.onInputDown.add(function(sprite, pt) { 
-	console.log("Here", pt.clientX, pt.clientY); 
 	if (that.theGame.toolStatus == 'add') {
 	    that.theGame.createWellAt(pt.clientX, pt.clientY); 
-	} else {
-	    console.log("Will delete");
 	}
     });
 };

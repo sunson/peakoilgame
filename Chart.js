@@ -149,7 +149,11 @@ PeakOil.Chart.prototype.renderChart = function() {
     if (this.areaUnderCurve) {
 	this.legend.text += " Tot: " + tot;
     } else {
-	this.legend.text += " Last: " + dpts[dpts.length - 2];
+	if (dpts.length >= 2) {
+	    this.legend.text += " Last: " + dpts[dpts.length - 2];
+	} else {
+	    this.legend.text += " Last: 0";
+	}
     }
     this.legend.x = 0;
     this.title.x = 0;

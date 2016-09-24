@@ -57,7 +57,6 @@ PeakOil.Bank.prototype.gameLoop = function() {
 	    if (this.isLoanMatured(l, nt)) {
 		if (!l.dues_paid) {
 		    var dueAmt = this.loanDues(l, nt);
-		    console.log("Due Amount", dueAmt);
 		    if (this.spend(dueAmt)) {
 			this.loans[i].dues_paid = true;
 			this.clearedDues += dueAmt;
@@ -70,7 +69,6 @@ PeakOil.Bank.prototype.gameLoop = function() {
 		}
 	    } else {
 		var dueAmt = this.loanDues(l, nt);
-		console.log("Estimated", dueAmt);
 		this.upcomingDues += dueAmt;
 	    }
 	}
@@ -147,7 +145,6 @@ PeakOil.Bank.prototype.getLoanPlan = function() {
 PeakOil.Bank.prototype.mortgage = function(amt, factory) {
     if (this.balance > amt * this.lending_ratio) {
 	this.newLoan(amt, this.default_interest_rate, this.default_loan_duration);
-	console.log("loan?", this.loans);
 	this.earn(amt);
 	this.spend(amt);
 	var thing = factory();

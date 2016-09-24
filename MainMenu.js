@@ -134,8 +134,6 @@ PeakOil.MainMenu.prototype = {
 		w.alpha = 0.5;
 		w.turnOff();
 	    }
-	} else {
-	    console.log("HAHA");
 	}
     },
 
